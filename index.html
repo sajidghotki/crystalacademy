@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crystal Educational Academy</title>
+    <!--
+		Crystal Educational Academy - Landing Page
+		- Built with HTML & CSS only
+		- Layout uses Flexbox exclusively (no grid, no floats)
+		- Beginner-friendly comments included
+	-->
+    <style>
+        /* ---------- Basic Reset & Typography ---------- */
+        * {
+            box-sizing: border-box;
+        }
+
+        /* smooth scrolling for in-page links */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            color: #222;
+            line-height: 1.5;
+            background: #f7f9fc;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* Ensure anchored sections are visible beneath the sticky header
+           - Use a CSS variable for header offset and increase on small screens */
+        /* header offset for anchor scrolling; increased to ensure sections clear header */
+        :root {
+            --header-offset: 140px;
+        }
+
+        /* Prefer scroll-margin-top, and add a robust fallback using a pseudo-anchor */
+        section {
+            scroll-margin-top: calc(var(--header-offset) + 8px);
+        }
+
+        /* Fallback: create an invisible pseudo-element before each section
+           so browser scroll lands the visible content below the sticky header. */
+        section::before {
+            content: '';
+            display: block;
+            height: var(--header-offset);
+            margin-top: calc(-1 * var(--header-offset));
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        @media (max-width: 560px) {
+
+            /* header stacks on small screens; use a larger offset */
+            :root {
+                --header-offset: 240px;
+            }
+        }
+
+        /* Ensure common anchored sections have explicit offset as well */
+        #about,
+        #faculty {
+            scroll-margin-top: calc(var(--header-offset) + 8px);
+        }
+
+        /* Contact section: prevent interfering with sticky header */
+        #contact {
+            scroll-margin-top: 0;
+        }
+
+        #contact::before {
+            display: none;
+        }
+
+        /* ---------- Container ---------- */
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ---------- Header (3 sections using Flexbox) ---------- */
+        header {
+            background: linear-gradient(90deg, #ffffff, #f0f7ff);
+            padding: 16px 0;
+            border-bottom: 1px solid #e6eef8;
+            position: sticky;
+            /* make header stick to the top */
+            top: 0;
+            z-index: 999;
+            /* keep above content */
+            box-shadow: 0 4px 12px rgba(12, 56, 120, 0.05);
+        }
+
+        .header-row {
+            display: flex;
+            /* primary flex container */
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        /* Left: Logo text */
+        .logo {
+            font-weight: 700;
+            color: #0b4da2;
+            font-size: 1.15rem;
+            letter-spacing: 0.3px;
+        }
+
+        /* Center: Navigation */
+        nav {
+            display: flex;
+            /* center nav uses flex to layout items horizontally */
+            justify-content: center;
+            flex: 1 1 auto;
+            /* allows nav to grow/shrink */
+        }
+
+        .nav-list {
+            display: flex;
+            /* horizontal list */
+            gap: 22px;
+            align-items: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-list a {
+            position: relative;
+            padding: 6px 0;
+            color: #08306b;
+            font-weight: 600;
+            transition: color 220ms ease;
+        }
+
+        /* Smooth and beautiful hover effect using underline pseudo-element */
+        .nav-list a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -6px;
+            height: 3px;
+            background: linear-gradient(90deg, #66a6ff, #8b7bff);
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 260ms cubic-bezier(.2, .9, .2, 1);
+            border-radius: 2px;
+        }
+
+        .nav-list a:hover {
+            color: #0b5bd6;
+        }
+
+        .nav-list a:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* Right: Search bar */
+        .search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ensure the form inside search lays out input + button */
+        .search form {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search input[type="search"] {
+            padding: 8px 10px;
+            border: 1px solid #d7e6fb;
+            background: white;
+            border-radius: 8px;
+            min-width: 160px;
+            transition: box-shadow 160ms ease, border-color 160ms ease;
+        }
+
+        .search input[type="search"]:focus {
+            outline: none;
+            border-color: #7fb1ff;
+            box-shadow: 0 6px 18px rgba(48, 107, 255, 0.08);
+        }
+
+        /* search icon button */
+        .search-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid #d7e6fb;
+            background: white;
+            cursor: pointer;
+            transition: background 160ms ease, transform 120ms ease;
+        }
+
+        .search-btn:hover {
+            background: #f0f7ff;
+            transform: translateY(-2px);
+        }
+
+        .search-btn svg {
+            width: 18px;
+            height: 18px;
+            color: #0b4da2;
+        }
+
+        /* ---------- Hero Section ---------- */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 56px 0;
+            background: linear-gradient(180deg, #dff2ff 0%, #ffffff 60%);
+        }
+
+        /* Prevent hero content from touching viewport edges */
+        .hero .container {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .hero-inner {
+            display: flex;
+            /* keep content horizontally on wide screens */
+            gap: 36px;
+            align-items: center;
+            width: 100%;
+            flex-wrap: wrap;
+            /* stack on small screens */
+        }
+
+        .hero-text {
+            flex: 1 1 420px;
+        }
+
+        .hero h1 {
+            margin: 0 0 12px 0;
+            font-size: 2rem;
+            color: #08306b;
+            line-height: 1.05;
+        }
+
+        .hero p {
+            margin: 0 0 18px 0;
+            color: #2f4b6b;
+        }
+
+        .cta {
+            display: inline-block;
+            padding: 12px 18px;
+            background: linear-gradient(90deg, #4aa0ff, #7b5bff);
+            color: white;
+            border-radius: 8px;
+            font-weight: 700;
+            box-shadow: 0 8px 22px rgba(75, 90, 255, 0.12);
+            transition: transform 180ms ease, box-shadow 180ms ease;
+        }
+
+        .cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 36px rgba(75, 90, 255, 0.16);
+        }
+
+        /* Hero illustration / visual (simple decorative box) */
+        .hero-visual {
+            flex: 0 0 320px;
+            min-height: 200px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #e6f3ff, #f7f0ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(12, 56, 120, 0.06);
+            overflow: hidden;
+        }
+
+        /* Style for hero image */
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 12px;
+            transition: transform 300ms ease;
+        }
+
+        .hero-visual:hover .hero-image {
+            transform: scale(1.08);
+        }
+
+        /* ---------- About Section ---------- */
+        .about {
+            padding: 40px 0;
+            background: linear-gradient(180deg, #ffffff, #fbfdff);
+        }
+
+        .about-grid {
+            display: flex;
+            /* layout cards horizontally with wrap */
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: stretch;
+        }
+
+        .about-card {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(12, 56, 120, 0.04);
+            flex: 1 1 240px;
+            min-width: 220px;
+        }
+
+        /* ---------- Faculty Section (6 cards in 2 rows) ---------- */
+        .faculty {
+            padding: 44px 0;
+        }
+
+        .faculty-grid {
+            display: flex;
+            /* use flex-wrap to create rows */
+            flex-wrap: wrap;
+            gap: 18px;
+            justify-content: center;
+        }
+
+        /* Each card uses flexbox for internal layout */
+        .teacher-card {
+            background: white;
+            border-radius: 10px;
+            padding: 16px;
+            width: calc(33.333% - 18px);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 8px 20px rgba(12, 56, 120, 0.06);
+            transition: transform 160ms ease;
+        }
+
+        .teacher-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .teacher-photo {
+            flex: 0 0 84px;
+            width: 84px;
+            height: 84px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #eef8ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .teacher-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .teacher-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .teacher-name {
+            font-weight: 700;
+            color: #07306b;
+        }
+
+        .teacher-degree {
+            color: #4b6b88;
+            font-size: 0.92rem;
+        }
+
+        /* ---------- Contact Section ---------- */
+        .contact {
+            background: linear-gradient(90deg, #ffffff, #f6fbff);
+            padding: 28px 0;
+            border-top: 1px solid #e9f1fb;
+        }
+
+        .contact-inner {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .owner {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(12, 56, 120, 0.04);
+            max-width: 520px;
+        }
+
+        .owner h3 {
+            margin: 0 0 6px 0;
+            color: #08306b;
+        }
+
+        .owner p {
+            margin: 6px 0;
+            color: #344a65;
+        }
+
+        /* ---------- Footer ---------- */
+        footer {
+            padding: 18px 0;
+            text-align: center;
+            color: #6b7d92;
+            font-size: 0.95rem;
+        }
+
+        /* ---------- Responsive Breakpoints (Flexbox-friendly) ---------- */
+        @media (max-width: 900px) {
+            .teacher-card {
+                width: calc(50% - 18px);
+            }
+
+            .hero-visual {
+                flex: 1 1 320px;
+            }
+        }
+
+        @media (max-width: 560px) {
+
+            /* Stack header vertically and center all items */
+            .header-row {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .logo {
+                order: 1;
+                text-align: center;
+                width: 100%;
+            }
+
+            nav {
+                order: 2;
+                width: 100%;
+            }
+
+            .nav-list {
+                gap: 12px;
+                justify-content: center;
+                flex-wrap: wrap;
+                padding: 8px 0;
+            }
+
+            .nav-list a {
+                padding: 8px 10px;
+            }
+
+            .search {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .search form {
+                justify-content: center;
+                width: 100%;
+                max-width: 420px;
+                margin: 0 auto;
+            }
+
+            .search input[type="search"] {
+                min-width: 0;
+                width: calc(100% - 56px);
+            }
+
+            /* Faculty cards become single column */
+            .teacher-card {
+                width: 100%;
+            }
+
+            /* Hero: stack vertically, center text and visual */
+            .hero {
+                padding: 36px 0;
+            }
+
+            /* extra horizontal padding for hero on small screens */
+            .hero .container {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .hero-inner {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .hero-text {
+                order: 1;
+            }
+
+            .hero-visual {
+                order: 2;
+                width: 100%;
+                max-width: 360px;
+                flex: 0 0 auto;
+            }
+
+            .hero h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header: left (logo), center (nav), right (search) -->
+    <header>
+        <div class="container header-row">
+            <div class="logo">Crystal Educational Academy</div>
+
+            <nav aria-label="Main navigation">
+                <ul class="nav-list">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#faculty">Faculty</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="search">
+                <!-- simple search input (no JS). action omitted intentionally -->
+                <form role="search" onsubmit="return false;">
+                    <input type="search" placeholder="Search" aria-label="Search">
+                    <button type="submit" class="search-btn" aria-label="Search">
+                        <!-- simple magnifier SVG icon -->
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M21 21l-4.35-4.35" stroke="#0b4da2" stroke-width="1.6" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <circle cx="10.5" cy="10.5" r="5.25" stroke="#0b4da2" stroke-width="1.6"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container hero-inner">
+            <div class="hero-text">
+                <h1>Preparing Students for 9th–12th Class Success</h1>
+                <p>Crystal Educational Academy offers focused, curriculum-aligned guidance with experienced faculty to
+                    help students excel in exams and build strong fundamentals.</p>
+                <a class="cta" href="#contact">Enroll Now</a>
+            </div>
+            <div class="hero-visual">
+                <!-- Hero image placeholder - add your image here -->
+                <img src="./images/Class.png" alt="Crystal Educational Academy" class="hero-image">
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 style="color:#08306b; margin:0 0 12px 0;">About Crystal Educational Academy</h2>
+            <p style="margin:0 0 18px 0; color:#4b6b88; max-width:900px;">Crystal Educational Academy provides focused
+                preparation for students of classes 9 to 12. Our experienced faculty use exam-oriented teaching, regular
+                assessments, and personalized doubt sessions to build strong fundamentals and improve performance.</p>
+
+            <div class="about-grid" style="margin-top:18px;">
+                <div class="about-card">
+                    <h3 style="margin:0 0 8px 0; color:#07306b;">Our Mission</h3>
+                    <p style="margin:0; color:#344a65;">To empower every student with clear concepts, confidence, and
+                        exam strategies required to excel.</p>
+                </div>
+
+                <div class="about-card">
+                    <h3 style="margin:0 0 8px 0; color:#07306b;">What We Offer</h3>
+                    <p style="margin:0; color:#344a65;">Targeted lessons, model tests, revision workshops, and
+                        one-on-one doubt-clearing sessions tailored for classes 9–12.</p>
+                </div>
+
+                <div class="about-card">
+                    <h3 style="margin:0 0 8px 0; color:#07306b;">Why Choose Us</h3>
+                    <p style="margin:0; color:#344a65;">A dedicated faculty, proven study plans, and a friendly learning
+                        environment that focuses on results.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Faculty Section -->
+    <section id="faculty" class="faculty">
+        <div class="container">
+            <h2 style="color:#08306b; margin:0 0 18px 0;">Our Faculty</h2>
+            <p style="margin:0 0 18px 0; color:#4b6b88;">Experienced teachers focused on exam strategies and concept
+                clarity.</p>
+
+            <div class="faculty-grid" role="list">
+                <!-- 6 teacher cards; images use placeholders -->
+                <article class="teacher-card" role="listitem">
+                    <div class="teacher-photo"><img src="./images/Faculty/1.png" alt="Teacher photo"></div>
+                    <div class="teacher-info">
+                        <div class="teacher-name">Mr. Ahmed Khan</div>
+                        <div class="teacher-degree">M.Sc. Physics</div>
+                    </div>
+                </article>
+
+                <article class="teacher-card" role="listitem">
+                    <div class="teacher-photo"><img src="./images/Faculty/2.png" alt="Teacher photo"></div>
+                    <div class="teacher-info">
+                        <div class="teacher-name">Mr. Imran Ali</div>
+                        <div class="teacher-degree">M.A. English</div>
+                    </div>
+                </article>
+
+                <article class="teacher-card" role="listitem">
+                    <div class="teacher-photo"><img src="./images/Faculty/3.png" alt="Teacher photo"></div>
+                    <div class="teacher-info">
+                        <div class="teacher-name">Mr. Salman R.</div>
+                        <div class="teacher-degree">M.Sc. Mathematics</div>
+                    </div>
+                </article>
+
+                <article class="teacher-card" role="listitem">
+                    <div class="teacher-photo"><img src="./images/Faculty/5.png" alt="Teacher photo"></div>
+                    <div class="teacher-info">
+                        <div class="teacher-name">Ms. Ayesha Iqbal</div>
+                        <div class="teacher-degree">B.Ed., Biology</div>
+                    </div>
+                </article>
+
+                <article class="teacher-card" role="listitem">
+                    <div class="teacher-photo"><img src="./images/Faculty/6.png" alt="Teacher photo"></div>
+                    <div class="teacher-info">
+                        <div class="teacher-name">Ms. Hina Butt</div>
+                        <div class="teacher-degree">M.Com</div>
+                    </div>
+                </article>
+
+                <article class="teacher-card" role="listitem">
+                    <div class="teacher-photo"><img src="./images/Faculty/7.png" alt="Teacher photo"></div>
+                    <div class="teacher-info">
+                        <div class="teacher-name">Ms. Zoya Khan</div>
+                        <div class="teacher-degree">M.Sc. Chemistry</div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container contact-inner">
+            <div class="owner">
+                <h3>Contact the Academy Owner</h3>
+                <p><strong>Sajid Ali Arain</strong></p>
+                <p>Phone: 0301-2833606, 0311-0833000</p>
+                <p>Email: <a href="mailto:crystalacademy@gmail.com">crystalacademy@gmail.com</a></p>
+            </div>
+
+            <div style="flex:1 1 280px; align-self:center; color:#344a65;">
+                <p style="margin:0 0 8px 0; font-weight:600;">Crystal Educational Academy</p>
+                <p style="margin:0;">Focused prep for classes 9 — 12. Practical revision, model tests, and doubt
+                    sessions.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            Copyright &copy; 2026 | Crystal Educational Academy | All rights reserved
+        </div>
+    </footer>
+
+</body>
+
+</html>
